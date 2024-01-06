@@ -1,0 +1,7 @@
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:31:14:STM32446UARTenable	560	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:45:6:STM32446Usart1Enable	4	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:50:6:STM32446Usart1Inic	24	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:75:6:STM32446Usart1Transmit	4	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:94:6:STM32446Usart1Receive	4	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:104:6:STM32446Usart1Parameters	88	static
+C:/Users/sergi/Documents/GitHub_2023/NUCLEO-F446RE/User_Library/Src/stm32446uart.c:154:6:STM32446Usart1Stop	4	static

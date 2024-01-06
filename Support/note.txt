@@ -1,0 +1,24 @@
+NB:
+
+Remove stm32f4xx_it.h, in order to work.
+
+systick already in use.
+
+
+After go to Project -> Properties -> C/C++ General -> Paths and Symbols
+then link -> Includes
+          -> Source Location
+
+First enable clock, second configure peripheral, third enable module, fourth setup module.
+
+
+
+
+
+To generate hex files:
+Project -> Properties -> C/C++ Build -> Settings -> MCU Post build outputs
+then tick the box corresponding "Convert to Intel Hex file"
+
+IDES, are just an abstraction to simplify coding in a logical and coherent manner, 
+making it perceivable for man.
+

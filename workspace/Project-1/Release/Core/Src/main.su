@@ -1,0 +1,4 @@
+../Core/Src/main.c:220:6:portinic	16	static
+../Core/Src/main.c:60:5:main	8408	static
+../Core/Src/main.c:273:6:TIM1_BRK_TIM9_IRQHandler	24	static
+../Core/Src/main.c:303:6:Error_Handler	0	static,ignoring_inline_asm
