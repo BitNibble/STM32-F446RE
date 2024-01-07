@@ -187,6 +187,7 @@ typedef struct
 	#endif
 }STM32446USART6obj;
 STM32446USART1obj usart1_inic(void);
+STM32446USART1obj*  usart1(void);
 STM32446USART2obj usart2_inic(void);
 STM32446USART3obj usart3_inic(void);
 STM32446USART4obj uart4_inic(void);

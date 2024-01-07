@@ -73,8 +73,8 @@ typedef struct
 	uint32_t (*value)(void);
 }FUNC;
 
-FUNC* func(void);
 FUNC FUNCenable(void);
+FUNC* func(void);
 
 #endif
 

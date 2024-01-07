@@ -45,6 +45,7 @@ typedef struct
 }ARMLCD0;
 
 ARMLCD0 ARMLCD0enable(GPIO_TypeDef* reg);
+ARMLCD0* lcd0(void);
 
 #endif
 

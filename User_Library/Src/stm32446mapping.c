@@ -149,7 +149,8 @@ STM32446 STM32446enable(void){
 	#endif
 	// USART
 	#if defined(_STM32446USART_H_)
-		stm32446.usart1 = usart1_inic();
+		usart1_inic();
+		stm32446.usart1 = (STM32446USART1obj*) usart1();
 		stm32446.usart2 = usart2_inic();
 		stm32446.usart3 = usart3_inic();
 		stm32446.uart4 = uart4_inic();
@@ -160,7 +161,8 @@ STM32446 STM32446enable(void){
 	stm32446.query = query_inic();
 	// PRIVATE
 	#if defined(_ARMFUNCTION_H_)
-		stm32446.func = FUNCenable();
+		FUNCenable();
+		stm32446.func = func();
 	#endif
 	
 	SystickInic(); // Polling delay source.
@@ -168,7 +170,7 @@ STM32446 STM32446enable(void){
 	return stm32446;
 }
 
-STM32446* stm(void){return &stm32446;}
+STM32446* stm(void){return (STM32446*) &stm32446;}
 /*** Query ***/
 STM32446CLOCK_prescaler CLOCK_prescaler_inic(void)
 {

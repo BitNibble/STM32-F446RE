@@ -19,6 +19,7 @@ Comment:
 #define ARMLCD0_LCDCMDMASK ((1 << ARMLCD0_RS) | (1 << ARMLCD0_RW) | (1 << ARMLCD0_EN))
 
 /*** File Variable ***/
+static ARMLCD0 setup_armlcd0;
 static GPIO_TypeDef* ireg;
 static uint32_t armlcd0_detect;
 
@@ -39,20 +40,12 @@ void ARMLCD0_reboot(void);
 void ARMLCD0_strobe(void);
 void armlcd_setpin( GPIO_TypeDef* reg, int pin );
 void armlcd_resetpin( GPIO_TypeDef* reg, int pin );
-//uint32_t armlcd_readreg(uint32_t reg, uint32_t size_block, uint32_t bit);
-//void armlcd_writereg(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data);
-//void armlcd_setreg(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data);
-//void armlcd_setbit(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data);
-//uint32_t armlcd_getsetbit(volatile uint32_t* reg, uint32_t size_block, uint32_t bit);
 
 /*** LCD0 Procedure & Function Definition ***/
 ARMLCD0 ARMLCD0enable(GPIO_TypeDef* reg)
 {
 	// ALLOCACAO MEMORIA PARA Estrutura
-	ARMLCD0 setup_armlcd0;
-	//stm = STM32446enable();
 
-	// LOCAL VARIABLES
 	// import parameters
 	ireg = reg;
 	// initialize variables
@@ -73,6 +66,8 @@ ARMLCD0 ARMLCD0enable(GPIO_TypeDef* reg)
 	
 	return setup_armlcd0;
 }
+
+ARMLCD0* lcd0(void){ return (ARMLCD0*) &setup_armlcd0; }
 
 void ARMLCD0_inic(void)
 {
@@ -309,58 +304,6 @@ void armlcd_setpin( GPIO_TypeDef* reg, int pin )
 void armlcd_resetpin( GPIO_TypeDef* reg, int pin )
 {
 	reg->BSRR = (unsigned int)((1 << pin) << 16);
-}
-
-uint32_t armlcd_readreg(uint32_t reg, uint32_t size_block, uint32_t bit)
-{
-	if(bit > 31){ bit = 0;} if(size_block > 32){ size_block = 32;}
-	uint32_t value = reg;
-	uint32_t mask = (unsigned int)((1 << size_block) - 1);
-	value &= (mask << bit);
-	value = (value >> bit);
-	return value;
-}
-
-void armlcd_writereg(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data)
-{
-	if(bit > 31){ bit = 0;} if(size_block > 32){ size_block = 32;}
-	uint32_t value = data;
-	uint32_t mask = (unsigned int)((1 << size_block) - 1);
-	value &= mask;
-	value = (value << bit);
-	*reg = value;
-}
-
-void armlcd_setreg(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data)
-{
-	if(bit > 31){ bit = 0;} if(size_block > 32){ size_block = 32;}
-	uint32_t value = data;
-	uint32_t mask = (unsigned int)((1 << size_block) - 1);
-	value &= mask;
-	*reg &= ~(mask << bit);
-	*reg |= (value << bit);
-}
-
-void armlcd_setbit(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data)
-{
-	uint32_t n = 0;
-	if(bit > 31){ n = bit/32; bit = bit - (n * 32); } if(size_block > 32){ size_block = 32;}
-	uint32_t value = data;
-	uint32_t mask = (unsigned int)((1 << size_block) - 1);
-	value &= mask;
-	*(reg + n ) &= ~(mask << bit);
-	*(reg + n ) |= (value << bit);
-}
-
-uint32_t armlcd_getsetbit(volatile uint32_t* reg, uint32_t size_block, uint32_t bit)
-{
-	uint32_t n = 0;
-	if(bit > 31){ n = bit/32; bit = bit - (n * 32); } if(size_block > 32){ size_block = 32;}
-	uint32_t value = *(reg + n );
-	uint32_t mask = (unsigned int)((1 << size_block) - 1);
-	value &= (mask << bit);
-	value = (value >> bit);
-	return value;
 }
 
 /******************************************************************************

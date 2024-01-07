@@ -91,7 +91,7 @@ dir = 0;
 hc = HC595enable(&stm()->gpioc.reg->MODER, &stm()->gpioc.reg->ODR, 2, 1, 0);
 lcd = ARMLCD0enable(stm()->gpiob.reg);
 
-stm()->usart1.parameter(8, 16, 1, 9600);
+usart1()->parameter(8, 16, 1, 9600);
 
 /***************************** TEST STUFF START *******************************/
 
@@ -156,16 +156,16 @@ if(zone == 2)
 if(zone == 3)
 {// workspace 3 USART1 TX RX
 
-	if( stm()->usart1.reg->SR & (1 << 6) ){ // TC: Transmission complete
+	if( stm()->usart1->reg->SR & (1 << 6) ){ // TC: Transmission complete
 
 		transmit = circ.get(&circ.par);
 		if(transmit)
-			stm()->usart1.reg->DR = transmit;
+			stm()->usart1->reg->DR = transmit;
 
 	}
 
-	if(stm()->usart1.reg->SR & (1 << 5)){ // RXNE: Read data register not empty
-		receive = stm()->usart1.reg->DR;
+	if(stm()->usart1->reg->SR & (1 << 5)){ // RXNE: Read data register not empty
+		receive = stm()->usart1->reg->DR;
 		if(receive){
 			circ2.put(&circ2.par, receive);
 
@@ -177,7 +177,7 @@ if(zone == 3)
 			}
 
 		}
-		stm()->usart1.reg->SR &=  ~(1 << 5);
+		stm()->usart1->reg->SR &=  ~(1 << 5);
 	}
 
 	continue;
@@ -235,16 +235,16 @@ void portinic(void)
 	stm()->gpioc.moder(0,13);
 	stm()->gpioc.pupdr(1,13);
 	/********* USART1 *********/
-	stm()->usart1.cr1.ue(on);
+	stm()->usart1->cr1.ue(on);
 	stm()->gpioa.moder(2,9);
 	stm()->gpioa.moder(2,10);
 	stm()->gpioa.afr(7,9);
 	stm()->gpioa.afr(7,10);
-	stm()->usart1.parameter(8, 16, 1, 38400);
-	stm()->usart1.cr3.dmat(off);
-	stm()->usart1.cr1.te(on);
-	stm()->usart1.cr3.dmar(off);
-	stm()->usart1.cr1.re(on);
+	stm()->usart1->parameter(8, 16, 1, 38400);
+	stm()->usart1->cr3.dmat(off);
+	stm()->usart1->cr1.te(on);
+	stm()->usart1->cr3.dmar(off);
+	stm()->usart1->cr1.re(on);
 	/****** TIMER9 SETUP ******/
 	// NVIC
 	stm()->nvic.set_enable(24);

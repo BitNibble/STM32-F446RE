@@ -409,7 +409,7 @@ typedef struct
 	#endif
 
 	#if defined(_STM32446USART_H_)
-		STM32446USART1obj usart1;
+		STM32446USART1obj* usart1;
 		STM32446USART2obj usart2;
 		STM32446USART3obj usart3;
 		STM32446USART4obj uart4;
@@ -418,14 +418,14 @@ typedef struct
 	#endif
 	//PRIVATE
 	#if defined(_ARMFUNCTION_H_)
-		FUNC func;
+		FUNC* func;
 	#endif
 
 }STM32446;
 
 /*** Global ***/
-STM32446* stm(void);
 STM32446 STM32446enable(void);
+STM32446* stm(void);
 
 /*** INTERRUPT HEADER ***/
 void Reset_IRQHandler(void);

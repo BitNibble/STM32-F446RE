@@ -12,6 +12,10 @@ Comment:
 #include "stm32446mapping.h"
 #include "stm32446usart.h"
 #include <math.h>
+
+/*** File Variable ***/
+static STM32446USART1obj stm32446_usart1;
+
 /*** File Procedure & Function Header ***/
 uint32_t usart_readreg(uint32_t reg, uint32_t size_block, uint32_t bit);
 void usart_writereg(volatile uint32_t* reg, uint32_t size_block, uint32_t bit, uint32_t data);
@@ -1850,7 +1854,7 @@ STM32446USART_GTPR stm32446_usart1_gtpr_inic(void)
 /*** USART1 INIC Procedure & Function Definition ***/
 STM32446USART1obj usart1_inic(void)
 {
-	STM32446USART1obj stm32446_usart1;
+	// STM32446USART1obj stm32446_usart1;
 	stm32446_usart1.reg = USART1;
 	/*** USART1 Bit Mapping Link ***/
 	stm32446_usart1.sr = stm32446_usart1_sr_inic();
@@ -1866,6 +1870,9 @@ STM32446USART1obj usart1_inic(void)
 	stm32446_usart1.parameter = STM32446Usart1Parameter;
 	return stm32446_usart1;
 }
+
+STM32446USART1obj*  usart1(void){ return (STM32446USART1obj*) &stm32446_usart1; }
+
 /*** USART2 Auxiliar ***/
 STM32446USART_SR stm32446_usart2_sr_inic(void)
 {
