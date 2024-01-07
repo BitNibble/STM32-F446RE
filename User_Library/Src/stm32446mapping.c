@@ -159,7 +159,7 @@ STM32446 STM32446enable(void){
 	// QUERY
 	stm32446.query = query_inic();
 	// PRIVATE
-	#if defined(_FUNCTION_H_)
+	#if defined(_ARMFUNCTION_H_)
 		stm32446.func = FUNCenable();
 	#endif
 	

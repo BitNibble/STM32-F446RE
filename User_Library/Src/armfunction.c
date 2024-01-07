@@ -134,6 +134,7 @@ FUNC FUNCenable( void )
 	setup_func.triggerA = function_triggerA;
 	setup_func.triggerB = function_triggerB;
 	setup_func.value = read_value;
+
 	return setup_func;
 }
 
