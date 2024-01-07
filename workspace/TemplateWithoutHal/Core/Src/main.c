@@ -41,7 +41,7 @@
 
 #include <arm_math.h>
 
-#include "function.h"
+#include "armfunction.h"
 #include "explode.h"
 #include "74hc595.h"
 #include "armlcd.h"
@@ -358,7 +358,7 @@ void calendario(void)
 
 		case 3: // message
 			lcd.gotoxy(0,0);
-			lcd.string_size("Calendario",10);
+			lcd.string_size("Cal",10);
 
 			rtc()->dr2vec(vecD);
 			lcd.gotoxy(2,0);

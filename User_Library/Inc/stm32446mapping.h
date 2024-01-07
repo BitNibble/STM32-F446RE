@@ -63,7 +63,7 @@ Comment:
 //#include "stm32446tim2to5.h"
 //#include "stm32446tim6and7.h"
 #include "stm32446tim9to14.h"
-#include "function.h"
+#include "armfunction.h"
 /************ STM32F446RE ************/
 /********** Global TypeDef ***********/
 typedef struct
@@ -417,7 +417,7 @@ typedef struct
 		STM32446USART6obj usart6;
 	#endif
 	//PRIVATE
-	#if defined(_FUNCTION_H_)
+	#if defined(_ARMFUNCTION_H_)
 		FUNC func;
 	#endif
 

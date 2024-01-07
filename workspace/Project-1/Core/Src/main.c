@@ -29,7 +29,7 @@
 #include <inttypes.h>
 
 #include "stm32446mapping.h"
-#include "function.h"
+#include "armfunction.h"
 #include "explode.h"
 #include "74hc595.h"
 #include "armlcd.h"
@@ -37,7 +37,6 @@
 
 #include "stm32f4xx_hal.h"
 
-static FUNC func;
 static EXPLODE PINA;
 static EXPLODE PINB;
 static EXPLODE PINC;
@@ -77,7 +76,7 @@ STM32446enable(); // stm object
 
 portinic();
 
-func = FUNCenable();
+FUNCenable();
 PINA = EXPLODEenable();
 PINB = EXPLODEenable();
 PINC = EXPLODEenable();
@@ -118,7 +117,7 @@ if(zone == 0)
 /******************************************************************************/
 if(zone == 1)
 {// workspace 1
-	value = stm()->func.triggerB(PINC.par.HL,PINC.par.LH,13,count2);
+	value = func()->triggerB(PINC.par.HL,PINC.par.LH,13,count2);
 	if( value > 5 && value < 11 ){
 		circ.putstr(&circ.par, "5 to 10 pulse press\r\n" );
 	}
@@ -145,7 +144,7 @@ if(zone == 2)
 	}else{
 		temperature /= n_samples;
 		temperature = (temperature/3.1 - 943/3.1) + 25;
-		lcd.string_size( stm()->func.print_v1(message, 6, "%d %cC", (unsigned int)temperature, (char) 0xDF ), 6);
+		lcd.string_size( func()->print_v1(message, 6, "%d %cC", (unsigned int)temperature, (char) 0xDF ), 6);
 		//lcd.string_size( stm.func.ftoa( stm.rcc.systemclock(), message, 0) , 14);
 		samples=0;
 	}

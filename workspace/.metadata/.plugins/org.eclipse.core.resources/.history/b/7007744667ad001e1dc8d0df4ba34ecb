@@ -44,19 +44,18 @@
 #include "function.h"
 #include "explode.h"
 #include "74hc595.h"
-#include "lcd.h"
+#include "armlcd.h"
 #include "circbuffer.h"
 
 #ifndef ass
 	#define ass (1)
 #endif
 
-static STM32446_RTC rtc1;
 static EXPLODE PINA;
 static EXPLODE PINB;
 static EXPLODE PINC;
 static HC595 hc;
-static LCD0 lcd;
+static ARMLCD0 lcd;
 static circbuff circ1;
 static circbuff circ2;
 static char buffer1[32]; // for circular buffer
@@ -100,9 +99,7 @@ void USART1_IRQHandler(void);
 /*************************************/
 int main(void)
 {
-STM32446enable(); // stm object
-
-//rtc1 = stm()->rtc.enable();
+STM32446enable();
 stm()->rtc.enable();
 
 portinic();
@@ -130,7 +127,7 @@ count2 = 0;
 dir = 0;
 
 hc = HC595enable(&stm()->gpioc.reg->MODER, &stm()->gpioc.reg->ODR, 2, 1, 0);
-lcd = LCD0enable(stm()->gpiob.reg);
+lcd = ARMLCD0enable(stm()->gpiob.reg);
 
 
 circ1.putstr(&circ1.par, "Welcome\r\n");
@@ -279,10 +276,13 @@ void portinic(void)
 	stm()->dma2.func.circ_cfg(&ADC1->DR, (volatile long unsigned int*)temperature, 0, 0, 32, 1, 1, 0, 0);
 
 	/*********** RTC ***********/
-	//rtc1.clock(on);
+	// Three ways to kill a rabbit
+	//stm()->rtc.run()->clock(on);
 	stm()->rtc.clock(on);
-	//rtc1.inic(1); // 2 - LSI, 1 - LSE
-	rtc()->rtc.inic(1); // 2 - LSI, 1 - LSE
+	//rtc()->clock(on);
+	//stm()->rtc.run()->inic(1); // 2 - LSI, 1 - LSE
+	stm()->rtc.inic(1); // 2 - LSI, 1 - LSE
+	//rtc()->inic(1); // 2 - LSI, 1 - LSE
 	/***************************/
 }
 /******************************************************************************/
@@ -309,13 +309,13 @@ void calendario(void)
 		case 1: // show time
 			lcd.gotoxy(0,0);
 			lcd.string_size("Relogio",7);
-			rtc1.tr2vec(vecT);
+			rtc()->tr2vec(vecT);
 			lcd.gotoxy(3,0);
 			lcd.string_size(stm()->func.print_v2("hora: %d%d:%d%d:%d%d", vecT[0],vecT[1],vecT[2],vecT[3],vecT[4],vecT[5]),14);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > min1 && value < max1 ){
 				lcd.clear();
-				rtc1.dr2vec(vecD);
+				rtc()->dr2vec(vecD);
 				circ1.putstr(&circ1.par, stm()->func.print_v2("data: %d%d:%d%d:20%d%d\r\n", vecD[5],vecD[6],vecD[3],vecD[4],vecD[0],vecD[1]) );
 				choice = 2;
 			}
@@ -334,13 +334,13 @@ void calendario(void)
 		case 2: // show date
 			lcd.gotoxy(0,0);
 			lcd.string_size("Data",4);
-			rtc1.dr2vec(vecD);
+			rtc()->dr2vec(vecD);
 			lcd.gotoxy(3,0);
 			lcd.string_size(stm()->func.print_v2("data: %d%d:%d%d:20%d%d", vecD[5],vecD[6],vecD[3],vecD[4],vecD[0],vecD[1]),16);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > min1 && value < max1 ){
 				lcd.clear();
-				rtc1.tr2vec(vecT);
+				rtc()->tr2vec(vecT);
 				circ1.putstr(&circ1.par, stm()->func.print_v2("hora: %d%d:%d%d:%d%d\r\n", vecT[0],vecT[1],vecT[2],vecT[3],vecT[4],vecT[5]) );
 				choice = 1;
 			}
@@ -358,17 +358,17 @@ void calendario(void)
 
 		case 3: // message
 			lcd.gotoxy(0,0);
-			lcd.string_size("Calendario",10);
+			lcd.string_size("Cal",10);
 
-			rtc1.dr2vec(vecD);
+			rtc()->dr2vec(vecD);
 			lcd.gotoxy(2,0);
 			lcd.string_size(stm()->func.print_v2("data: %d%d:%d%d:20%d%d", vecD[5],vecD[6],vecD[3],vecD[4],vecD[0],vecD[1]), 16);
 
-			rtc1.tr2vec(vecT);
+			rtc()->tr2vec(vecT);
 			lcd.gotoxy(3,0);
 			lcd.string_size(stm()->func.print_v2("hora: %d%d:%d%d:%d%d", vecT[0],vecT[1],vecT[2],vecT[3],vecT[4],vecT[5]), 14);
 
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > min3 && value < max3 ){
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Relogio\r\n");
@@ -380,7 +380,7 @@ void calendario(void)
 		case 4: // Set Hour
 			lcd.gotoxy(0,0);
 			lcd.string_size("Hora:",5);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				hour ++;
 				if(hour > 23)
@@ -397,14 +397,14 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Relogio\r\n");
 				choice = 1;
-				rtc1.Hour(hour);
+				rtc()->Hour(hour);
 			}
 			break;
 
 		case 5: // Set Minute
 			lcd.gotoxy(0,0);
 			lcd.string_size("Minutos:",8);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				minute ++;
 				if(minute > 59)
@@ -421,14 +421,14 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Relogio\r\n");
 				choice = 1;
-				rtc1.Minute(minute);
+				rtc()->Minute(minute);
 			}
 			break;
 
 		case 6: // Set Second
 			lcd.gotoxy(0,0);
 			lcd.string_size("Segundos:",9);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				second ++;
 				if(second > 59)
@@ -445,7 +445,7 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Relogio\r\n");
 				choice = 1;
-				rtc1.Second(second);
+				rtc()->Second(second);
 			}
 			break;
 
@@ -453,7 +453,7 @@ void calendario(void)
 		case 7: // Set Year
 			lcd.gotoxy(0,0);
 			lcd.string_size("Ano:",4);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				ano ++;
 				if(ano > 99)
@@ -470,14 +470,14 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Data\r\n");
 				choice = 2;
-				rtc1.Year(ano);
+				rtc()->Year(ano);
 			}
 			break;
 
 		case 8: // Set Month
 			lcd.gotoxy(0,0);
 			lcd.string_size("Mes:",4);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				mes ++;
 				if(mes > 12)
@@ -494,14 +494,14 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Data\r\n");
 				choice = 2;
-				rtc1.Month(mes);
+				rtc()->Month(mes);
 			}
 			break;
 
 		case 9: // Set Day
 			lcd.gotoxy(0,0);
 			lcd.string_size("Dia:",4);
-			value = stm()->func.triggerA(PINC.par.LL,13,rtc1.get_ss());
+			value = stm()->func.triggerA(PINC.par.LL,13,rtc()->get_ss());
 			if( value > minp1 && value < maxp1 ){
 				dia ++;
 				if(dia > 31)
@@ -518,7 +518,7 @@ void calendario(void)
 				lcd.clear();
 				circ1.putstr(&circ1.par, "Data\r\n");
 				choice = 2;
-				rtc1.Day(dia);
+				rtc()->Day(dia);
 			}
 			break;
 
@@ -617,5 +617,11 @@ Subjects:
 3º Pointer and Variable
 4º Casting
 ******/
+/***
+	Cube IDE is much more strict, in the header file scope. It also does not allow global variables
+	It likes working more with functional programming and pointers.
+
+***/
+
 
 
